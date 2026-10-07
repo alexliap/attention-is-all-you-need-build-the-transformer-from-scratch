@@ -56,8 +56,18 @@ def pad_id_sequence(ids, max_len, pad_id):
     elif len(ids) > max_len:
         return ids[:max_len]
 
-# Step 6 - stack_padded_sequences_to_batch (not yet solved)
-# TODO: implement
+# Step 6 - stack_padded_sequences_to_batch
+import torch
+
+def stack_padded_sequences_to_batch(padded_sequences):
+    """Stack a list of equal-length padded id sequences into a 2D LongTensor batch."""
+    out = None
+    for item in padded_sequences:
+        if out is None:
+            out = torch.tensor(item)
+        else:
+            out = torch.vstack((out, torch.tensor(item)))
+    return out.reshape(len(padded_sequences), -1)
 
 # Step 7 - scale_embeddings_by_sqrt_d_model (not yet solved)
 # TODO: implement
