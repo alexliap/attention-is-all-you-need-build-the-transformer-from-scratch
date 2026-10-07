@@ -69,8 +69,13 @@ def stack_padded_sequences_to_batch(padded_sequences):
             out = torch.vstack((out, torch.tensor(item)))
     return out.reshape(len(padded_sequences), -1)
 
-# Step 7 - scale_embeddings_by_sqrt_d_model (not yet solved)
-# TODO: implement
+# Step 7 - scale_embeddings_by_sqrt_d_model
+import math
+import torch
+
+def scale_embeddings_by_sqrt_d_model(embeddings, d_model):
+    """Scale a token embedding tensor by sqrt(d_model)."""
+    return embeddings*math.sqrt(d_model)
 
 # Step 8 - compute_positional_div_term (not yet solved)
 # TODO: implement
