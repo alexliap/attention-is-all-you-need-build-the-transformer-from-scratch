@@ -309,8 +309,13 @@ def position_wise_feed_forward_network(x, w1, b1, w2, b2):
     out = apply_ffn_second_linear(hidden, w2, b2)
     return out
 
-# Step 35 - compute_layer_norm_mean_and_variance (not yet solved)
-# TODO: implement
+# Step 35 - compute_layer_norm_mean_and_variance
+import torch
+
+def compute_layer_norm_mean_and_variance(x):
+    mean = torch.mean(x, dim=-1, keepdim=True)
+    var = torch.var(x, dim=-1, keepdim=True, unbiased=False)
+    return mean, var
 
 # Step 36 - normalize_and_scale_with_gamma_beta (not yet solved)
 # TODO: implement
