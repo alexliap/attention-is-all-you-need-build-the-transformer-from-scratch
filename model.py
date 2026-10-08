@@ -118,7 +118,7 @@ def build_sinusoidal_positional_encoding(max_len, d_model):
     out = torch.zeros((max_len, d_model))
 
     position = build_position_index_column(max_len)
-    div_term = compute_positional_div_term(d_model // 2)
+    div_term = compute_positional_div_term(d_model)
 
     out = fill_even_indices_with_sin(out, position, div_term)
     out = fill_odd_indices_with_cos(out, position, div_term)
