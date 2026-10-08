@@ -146,8 +146,16 @@ def build_padding_mask(token_ids, pad_id):
     mask[pad_idxs] = False
     return mask.view(B, 1, 1, L)
 
-# Step 15 - build_causal_mask (not yet solved)
-# TODO: implement
+# Step 15 - build_causal_mask
+import torch
+
+def build_causal_mask(seq_len):
+    """Return a (1, 1, seq_len, seq_len) bool mask, True on and below diagonal."""
+    mask = torch.ones(size=(seq_len, seq_len), dtype=torch.bool)
+    for i in range(seq_len):
+        mask[:i, i] = False
+
+    return mask.view(1, 1, seq_len, seq_len)
 
 # Step 16 - combine_padding_and_causal_masks (not yet solved)
 # TODO: implement
