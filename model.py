@@ -98,7 +98,6 @@ import torch
 
 def fill_even_indices_with_sin(pe, position, div_term):
     """Fill even feature indices of pe with sin(position * div_term)."""
-    
     pe[:, 0::2] = torch.sin(position*div_term)
 
     return pe
@@ -118,7 +117,7 @@ def build_sinusoidal_positional_encoding(max_len, d_model):
     """Assemble the (max_len, d_model) sinusoidal positional encoding matrix."""
     out = torch.zeros((max_len, d_model))
 
-    position = build_position_index_column(d_model // 2).view(1, -1)
+    position = build_position_index_column(max_len)
     div_term = compute_positional_div_term(d_model // 2)
 
     out = fill_even_indices_with_sin(out, position, div_term)
