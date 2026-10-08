@@ -349,8 +349,24 @@ def encoder_layer_feed_forward_sublayer(x, w1, b1, w2, b2, gamma, beta):
     x = apply_residual_add_and_norm(x, out, gamma, beta)
     return x
 
-# Step 41 - assemble_encoder_layer (not yet solved)
-# TODO: implement
+# Step 41 - assemble_encoder_layer
+def assemble_encoder_layer(x, layer_params, num_heads, src_mask):
+    p = layer_params
+
+    x = encoder_layer_self_attention_sublayer(
+        x,
+        p["w_q"], p["w_k"], p["w_v"], p["w_o"],
+        p["attn_gamma"], p["attn_beta"],
+        num_heads, src_mask,
+    )
+
+    x = encoder_layer_feed_forward_sublayer(
+        x,
+        p["w1"], p["b1"], p["w2"], p["b2"],
+        p["ffn_gamma"], p["ffn_beta"],
+    )
+
+    return x
 
 # Step 42 - stack_encoder_layers (not yet solved)
 # TODO: implement
