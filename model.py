@@ -561,8 +561,22 @@ def init_decoder_layer_parameters(d_model, num_heads, d_ff):
         "ffn_beta": zeros(d_model),
     }
 
-# Step 54 - init_embedding_and_projection_parameters (not yet solved)
-# TODO: implement
+# Step 54 - init_embedding_and_projection_parameters
+import torch
+
+def init_embedding_and_projection_parameters(vocab_size, d_model, tie_weights=True):
+    """Allocate src/tgt embeddings and output projection (optionally tied)."""
+    def weight(fan_in, fan_out):
+        std = math.sqrt(2.0 / (fan_in + fan_out))  # Xavier-style scale
+        w = torch.randn(fan_in, fan_out, dtype=torch.float32) * std
+        return w.requires_grad_(True)
+
+    tgt_embedding = weight(vocab_size, d_model)
+    return {
+        "src_embedding": weight(vocab_size, d_model),
+        "tgt_embedding": tgt_embedding,
+        "output_projection": tgt_embedding if tie_weights else weight(vocab_size, d_model)
+    }
 
 # Step 55 - collect_model_parameters_into_list (not yet solved)
 # TODO: implement
