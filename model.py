@@ -601,8 +601,12 @@ def collect_model_parameters_into_list(encoder_layer_params, decoder_layer_param
 
     return params
 
-# Step 56 - shift_targets_right_with_start_token (not yet solved)
-# TODO: implement
+# Step 56 - shift_targets_right_with_start_token
+def shift_targets_right_with_start_token(target_ids, start_token_id):
+    device = target_ids.device
+    start_tensor = torch.tensor([start_token_id] * target_ids.shape[0]).view(-1, 1)
+
+    return torch.hstack((start_tensor, target_ids[:, :-1]))
 
 # Step 57 - compute_noam_learning_rate (not yet solved)
 # TODO: implement
