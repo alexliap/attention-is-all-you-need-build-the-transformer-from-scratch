@@ -578,8 +578,28 @@ def init_embedding_and_projection_parameters(vocab_size, d_model, tie_weights=Tr
         "output_projection": tgt_embedding if tie_weights else weight(vocab_size, d_model)
     }
 
-# Step 55 - collect_model_parameters_into_list (not yet solved)
-# TODO: implement
+# Step 55 - collect_model_parameters_into_list
+import torch
+
+def collect_model_parameters_into_list(encoder_layer_params, decoder_layer_params, embedding_params):
+    params = []
+    seen = set()
+
+    def add(tensor):
+        if tensor.requires_grad and id(tensor) not in seen:
+            seen.add(id(tensor))
+            params.append(tensor)
+
+    for layer in encoder_layer_params:
+        for tensor in layer.values():
+            add(tensor)
+    for layer in decoder_layer_params:
+        for tensor in layer.values():
+            add(tensor)
+    for tensor in embedding_params.values():
+        add(tensor)
+
+    return params
 
 # Step 56 - shift_targets_right_with_start_token (not yet solved)
 # TODO: implement
