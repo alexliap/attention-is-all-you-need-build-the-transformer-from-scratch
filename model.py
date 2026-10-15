@@ -489,8 +489,39 @@ def run_transformer_forward(src_ids, tgt_ids, model_params, num_heads, pad_id):
     logits = apply_final_output_projection(dec, model_params["output_projection"])
     return apply_log_softmax_over_vocab(logits)
 
-# Step 52 - init_encoder_layer_parameters (not yet solved)
-# TODO: implement
+# Step 52 - init_encoder_layer_parameters
+import torch
+import math
+
+def init_encoder_layer_parameters(d_model, num_heads, d_ff):
+    """Return a dict of leaf tensors with requires_grad=True for one encoder layer."""
+    assert d_model % num_heads == 0, "d_model must be divisible by num_heads"
+
+    def weight(fan_in, fan_out):
+        std = math.sqrt(2.0 / (fan_in + fan_out))  # Xavier-style scale
+        w = torch.randn(fan_in, fan_out, dtype=torch.float32) * std
+        return w.requires_grad_(True)
+
+    def zeros(*shape):
+        return torch.zeros(*shape, dtype=torch.float32, requires_grad=True)
+
+    def ones(*shape):
+        return torch.ones(*shape, dtype=torch.float32, requires_grad=True)
+
+    return {
+        "w_q": weight(d_model, d_model),
+        "w_k": weight(d_model, d_model),
+        "w_v": weight(d_model, d_model),
+        "w_o": weight(d_model, d_model),
+        "w1": weight(d_model, d_ff),
+        "b1": zeros(d_ff),
+        "w2": weight(d_ff, d_model),
+        "b2": zeros(d_model),
+        "attn_gamma": ones(d_model),
+        "attn_beta": zeros(d_model),
+        "ffn_gamma": ones(d_model),
+        "ffn_beta": zeros(d_model),
+    }
 
 # Step 53 - init_decoder_layer_parameters (not yet solved)
 # TODO: implement
