@@ -611,6 +611,8 @@ def shift_targets_right_with_start_token(target_ids, start_token_id):
 # Step 57 - compute_noam_learning_rate
 def compute_noam_learning_rate(step, d_model, warmup_steps):
     scalar = (1/math.sqrt(d_model))
+    if step == 0:
+        return scalar
     option = min((1/math.sqrt(step)), step*(warmup_steps**(-3/2)))
     return scalar*option
 
@@ -772,8 +774,26 @@ def compute_batch_training_loss(src_batch, tgt_batch, model_params, config):
     total_loss = compute_label_smoothed_kl_loss(log_probs, dist)
     return average_loss_over_non_pad_tokens(total_loss, tgt_batch, pad_id)
 
-# Step 72 - run_training_step_with_backprop (not yet solved)
-# TODO: implement
+# Step 72 - run_training_step_with_backprop
+import torch
+
+def run_training_step_with_backprop(src_batch, tgt_batch, parameter_list, model_params, optimizer_state, step_number, config):
+    """Run one training iteration: zero grads, forward, backward, Noam LR, Adam step.
+
+    Returns the scalar loss value for the step as a Python float.
+    """
+    # TODO: zero grads
+    zero_all_parameter_gradients(parameter_list)
+    # compute loss
+    loss = compute_batch_training_loss(src_batch, tgt_batch, model_params, config)
+    # backward
+    loss.backward()
+    # look up Noam LR
+    learning_rate = compute_noam_learning_rate(optimizer_state["t"], config["d_model"], config["warmup_steps"])
+    # apply Adam step
+    optimizer_state = apply_adam_step_to_all_parameters(parameter_list, optimizer_state, learning_rate)
+
+    return loss
 
 # Step 73 - run_training_loop_for_steps (not yet solved)
 # TODO: implement
