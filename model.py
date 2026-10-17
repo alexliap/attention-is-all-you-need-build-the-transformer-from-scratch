@@ -740,8 +740,13 @@ def apply_adam_step_to_all_parameters(parameter_list, optimizer_state, learning_
 
     return optimizer_state
 
-# Step 70 - zero_all_parameter_gradients (not yet solved)
-# TODO: implement
+# Step 70 - zero_all_parameter_gradients
+import torch
+
+def zero_all_parameter_gradients(parameter_list):
+    """Clear the .grad of every parameter tensor before the next backward pass."""
+    for i in range(len(parameter_list)):
+        parameter_list[i].grad = None
 
 # Step 71 - compute_batch_training_loss (not yet solved)
 # TODO: implement
