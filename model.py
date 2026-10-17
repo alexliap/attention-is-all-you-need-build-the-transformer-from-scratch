@@ -782,7 +782,7 @@ def run_training_step_with_backprop(src_batch, tgt_batch, parameter_list, model_
 
     Returns the scalar loss value for the step as a Python float.
     """
-    # TODO: zero grads
+    # zero grads
     zero_all_parameter_gradients(parameter_list)
     # compute loss
     loss = compute_batch_training_loss(src_batch, tgt_batch, model_params, config)
@@ -793,7 +793,7 @@ def run_training_step_with_backprop(src_batch, tgt_batch, parameter_list, model_
     # apply Adam step
     optimizer_state = apply_adam_step_to_all_parameters(parameter_list, optimizer_state, learning_rate)
 
-    return loss
+    return loss.item()
 
 # Step 73 - run_training_loop_for_steps (not yet solved)
 # TODO: implement
