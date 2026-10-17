@@ -748,8 +748,29 @@ def zero_all_parameter_gradients(parameter_list):
     for i in range(len(parameter_list)):
         parameter_list[i].grad = None
 
-# Step 71 - compute_batch_training_loss (not yet solved)
-# TODO: implement
+# Step 71 - compute_batch_training_loss
+def compute_batch_training_loss(src_batch, tgt_batch, model_params, config):
+    pad_id = config["pad_id"]
+
+    # teacher forcing: decoder input is the target shifted right with the start token
+    decoder_input = shift_targets_right_with_start_token(tgt_batch, config["start_id"])
+
+    # (B, T, V) log probabilities
+    log_probs = run_transformer_forward(
+        src_batch, decoder_input, model_params, config["num_heads"], pad_id
+    )
+
+    # smoothed target distribution built against the UNSHIFTED gold tokens
+    smoothing = config["smoothing"]
+    dist = build_uniform_smoothing_distribution(
+        tuple(log_probs.shape), config["vocab_size"], smoothing
+    ).to(device=log_probs.device, dtype=log_probs.dtype)
+    dist = set_confidence_on_gold_tokens(dist, tgt_batch, 1.0 - smoothing)
+    dist = zero_pad_column_and_pad_token_rows(dist, tgt_batch, pad_id)
+
+    # summed loss, then mean over non-pad tokens
+    total_loss = compute_label_smoothed_kl_loss(log_probs, dist)
+    return average_loss_over_non_pad_tokens(total_loss, tgt_batch, pad_id)
 
 # Step 72 - run_training_step_with_backprop (not yet solved)
 # TODO: implement
