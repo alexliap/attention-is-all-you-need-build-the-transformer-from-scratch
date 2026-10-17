@@ -822,8 +822,9 @@ def pick_next_token_by_argmax(final_step_logits):
 def compute_length_penalty(sequence_length, alpha):
     return ((5+sequence_length)/6)**alpha
 
-# Step 76 - compute_candidate_scores (not yet solved)
-# TODO: implement
+# Step 76 - compute_candidate_scores
+def compute_candidate_scores(beam_scores, next_token_log_probs):
+    return next_token_log_probs + beam_scores.view(-1, 1)
 
 # Step 77 - select_top_k_candidates (not yet solved)
 # TODO: implement
