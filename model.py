@@ -826,8 +826,18 @@ def compute_length_penalty(sequence_length, alpha):
 def compute_candidate_scores(beam_scores, next_token_log_probs):
     return next_token_log_probs + beam_scores.view(-1, 1)
 
-# Step 77 - select_top_k_candidates (not yet solved)
-# TODO: implement
+# Step 77 - select_top_k_candidates
+def select_top_k_candidates(candidate_scores, k):
+    num_beams, vocab_size = candidate_scores.shape
+
+    # topk over the flattened matrix; results come sorted from highest to lowest
+    values, flat_indices = torch.topk(candidate_scores.reshape(-1), k)
+
+    return {
+        "beam_indices": flat_indices // vocab_size,   # row of each winner
+        "token_ids": flat_indices % vocab_size,       # column of each winner
+        "scores": values,
+    }
 
 # Step 78 - append_tokens_to_beam_sequences (not yet solved)
 # TODO: implement
