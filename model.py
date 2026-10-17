@@ -638,10 +638,6 @@ def zero_pad_column_and_pad_token_rows(smoothed_distribution, gold_token_ids, pa
     smoothed_distribution[:, :, pad_id] = 0
     smoothed_distribution[gold_token_ids == pad_id, :] = 0
 
-    # for i in range(len(gold_token_ids)):
-    #     if torch.any(gold_token_ids[i] == pad_id):
-    #         smoothed_distribution[:, i] = 0
-
     return smoothed_distribution
 
 # Step 61 - compute_label_smoothed_kl_loss (not yet solved)
